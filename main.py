@@ -7,10 +7,13 @@ from transformers import AutoTokenizer, AutoModelForQuestionAnswering
 
 
 # Download necessary NLTK resources
+nltk.download('punkt_tab')
 nltk.download('punkt')
 nltk.download('wordnet')
 nltk.download('stopwords')
 
+sentences = sent_tokenize("This is a test. How many sentences?")
+print(sentences)
 # Load BART model and tokenizer
 tokenizer = AutoTokenizer.from_pretrained("valhalla/bart-large-finetuned-squadv1")
 model = AutoModelForQuestionAnswering.from_pretrained("valhalla/bart-large-finetuned-squadv1")
@@ -29,7 +32,7 @@ def generate_flashcards(text, num_flashcards):
     questions = []
     for sentence in sentences:
         input_text = 'generate question: ' + sentence
-        question = pipe(input_text)
+        question = pipe(input_text, max_new_tokens=10000)  # You can adjust the value as needed
         question = question[0]['generated_text']
         questions.append(question)
 
